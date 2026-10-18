@@ -1,0 +1,1194 @@
+@import "tailwindcss";
+
+/* ============================================================
+   HABIHAN — tokens
+   Palette: one tinted neutral ramp (H75), one bronze ramp (H75),
+   one sienna accent (H45). Never a pure grey.
+   ============================================================ */
+
+@theme {
+  --color-ivory-1: oklch(97% 0.008 75);
+  --color-ivory-2: oklch(94% 0.01 75);
+  --color-ivory-3: oklch(90% 0.012 75);
+  --color-line: oklch(84% 0.014 75);
+  --color-line-2: oklch(76% 0.02 75);
+  --color-bronze-8: oklch(66% 0.06 75);
+  --color-bronze-9: oklch(58% 0.11 75);
+  --color-bronze-10: oklch(50% 0.11 75);
+  --color-bronze-11: oklch(42% 0.095 75);
+  --color-ink-11: oklch(42% 0.02 75);
+  --color-ink-12: oklch(22% 0.012 75);
+  --color-slab: oklch(15% 0.008 75);
+  --color-sienna: oklch(45% 0.12 45);
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-body: var(--font-source), system-ui, sans-serif;
+  --font-mono: var(--font-plex), ui-monospace, monospace;
+
+  --ease-arrival: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-utility: cubic-bezier(0.44, 0, 0.56, 1);
+}
+
+/* Hex fallbacks for engines without OKLCH. */
+@supports not (color: oklch(0% 0 0)) {
+  :root {
+    --color-ivory-1: #f7f2e9;
+    --color-ivory-2: #efe8da;
+    --color-ivory-3: #e3dac8;
+    --color-line: #d2c6ae;
+    --color-line-2: #b9aa8c;
+    --color-bronze-8: #a08752;
+    --color-bronze-9: #94742b;
+    --color-bronze-10: #7a5e1f;
+    --color-bronze-11: #634b18;
+    --color-ink-11: #5d564a;
+    --color-ink-12: #29241d;
+    --color-slab: #1a1611;
+    --color-sienna: #8a4b2e;
+  }
+}
+
+:root {
+  --rail: 0px;
+  --gutter: 20px;
+  --content: 1200px;
+  /* Tightened from 11vw/168px: at 1440 the old value left ~320px between the
+     last element of a section and the next section mark, which read as
+     unfinished rather than restrained. */
+  --sect-pad: clamp(80px, 8vw, 124px);
+  color-scheme: light;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --rail: 72px;
+    --gutter: 40px;
+  }
+}
+
+/* Hero scrub channels. Every one defaults to its FINAL value, so a page
+   with no JavaScript renders the composed final frame. */
+@property --m {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --swap {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --rule {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --cap {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --settle {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --copy {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+/* Release is the one channel whose final value is its resting value: with no
+   pin there is nothing to release, so it starts and stays at 0. */
+@property --release {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+html {
+  scroll-behavior: auto; /* Lenis owns smooth scroll; never both. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ivory-1);
+  color: var(--color-ink-12);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.35;
+  padding-left: var(--rail);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-bronze-9);
+  color: var(--color-ivory-1);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-bronze-9);
+  outline-offset: 2px;
+}
+
+.on-slab :focus-visible {
+  outline-color: var(--color-bronze-8);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+/* ---- type scale ---- */
+
+.t-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7.5vw, 7.25rem);
+  font-variation-settings: "opsz" 144, "wght" 340;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+}
+
+.t-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.375rem);
+  font-variation-settings: "opsz" 96, "wght" 380;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.t-h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.9vw, 1.75rem);
+  font-variation-settings: "opsz" 36, "wght" 400;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.t-lede {
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--color-ink-11);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+.t-body {
+  max-width: 68ch;
+  line-height: 1.35;
+}
+
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.t-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-variation-settings: "opsz" 48, "wght" 360;
+  line-height: 1.4;
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+
+/* ============================================================
+   Layout — the folio shell
+   ============================================================ */
+
+.wrap {
+  max-width: var(--content);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sect {
+  padding-block: var(--sect-pad);
+}
+
+.sect--tight {
+  padding-block: clamp(64px, 7vw, 104px);
+}
+
+/* Section label sitting on a full-bleed hairline. */
+.mark {
+  border-top: 1px solid var(--color-line);
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+
+.mark__inner {
+  max-width: var(--content);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  padding-top: 16px;
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  color: var(--color-ink-11);
+}
+
+.hair {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+  margin: 0;
+}
+
+.hair--strong {
+  border-top-color: var(--color-line-2);
+}
+
+/* ============================================================
+   FolioRail
+   ============================================================ */
+
+.rail {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .rail {
+    display: flex;
+    position: fixed;
+    inset-block: 0;
+    left: 0;
+    width: var(--rail);
+    border-right: 1px solid var(--color-line);
+    background: var(--color-ivory-1);
+    z-index: 60;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 24px;
+    color: var(--color-ink-11);
+  }
+}
+
+.rail__label,
+.rail__foot {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Nav
+   ============================================================ */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--gutter);
+  background: var(--color-ivory-1);
+  border-bottom: 1px solid var(--color-line);
+  transition:
+    background-color 280ms var(--ease-utility),
+    border-color 280ms var(--ease-utility),
+    color 280ms var(--ease-utility);
+}
+
+/* Transparent only while the Home hero is on screen, and only with JS. */
+html[data-hero="active"] .nav {
+  background: transparent;
+  border-bottom-color: transparent;
+  color: var(--color-ivory-1);
+}
+
+.nav__mark {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-variation-settings: "wght" 500, "opsz" 24;
+  letter-spacing: 0.08em;
+  position: relative;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.nav__mark::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+  background: var(--color-bronze-9);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms var(--ease-arrival);
+}
+
+/* The single flourish: the wordmark underlines once, at the settle beat. */
+html[data-settled="true"] .nav__mark::after {
+  transform: scaleX(1);
+}
+
+.nav__links {
+  display: none;
+  gap: clamp(20px, 2.4vw, 34px);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .nav__links {
+    display: flex;
+  }
+  .nav__toggle {
+    display: none;
+  }
+}
+
+.nav__link {
+  position: relative;
+  font-size: 0.9375rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--color-bronze-9);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms var(--ease-arrival);
+}
+
+.nav__link:hover::after,
+.nav__link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.nav__link--act {
+  color: var(--color-bronze-10);
+}
+
+html[data-hero="active"] .nav__link--act {
+  color: var(--color-ivory-1);
+}
+
+.nav__toggle {
+  min-width: 48px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Declared after .nav__toggle so it wins the cascade, not just the media query. */
+@media (min-width: 1024px) {
+  .nav__toggle {
+    display: none;
+  }
+}
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--color-ivory-1);
+  display: flex;
+  flex-direction: column;
+  padding: 24px var(--gutter);
+  animation: sheet-in 280ms var(--ease-arrival) both;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(-8px);
+  }
+}
+
+.sheet__link {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-variation-settings: "opsz" 72, "wght" 340;
+  letter-spacing: 0;
+  padding-block: 12px;
+  min-height: 48px;
+  animation: sheet-link 280ms var(--ease-arrival) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@keyframes sheet-link {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ============================================================
+   Plate — the locked media box
+   ============================================================ */
+
+.plate {
+  position: relative;
+  overflow: clip;
+  background: var(--color-ivory-3);
+  border-radius: 0;
+}
+
+.plate__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 620ms var(--ease-arrival);
+}
+
+.plate-link:hover .plate__img,
+.plate:hover > .plate__img {
+  transform: scale(1.03);
+}
+
+/* Only present when type sits on the image. */
+.plate__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 55%,
+    oklch(15% 0.008 75 / 0.45)
+  );
+  pointer-events: none;
+}
+
+/* The 1px ink mount rule, 8px below the plate. */
+.mount {
+  border-bottom: 1px solid var(--color-ink-12);
+  padding-bottom: 8px;
+}
+
+.cap {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-11);
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 280ms var(--ease-arrival);
+}
+
+.plate-link:hover .arrow,
+.row:hover .arrow,
+a:hover > .arrow {
+  transform: translateX(4px);
+}
+
+/* Row — the disciplines index. Hairline-separated, never a card. */
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: clamp(16px, 3vw, 40px);
+  align-items: center;
+  padding-block: clamp(20px, 2.4vw, 28px);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.row__name {
+  position: relative;
+  display: inline-block;
+}
+
+.row__name::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--color-bronze-9);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms var(--ease-arrival);
+}
+
+.row:hover .row__name::after {
+  transform: scaleX(1);
+}
+
+.row__thumb {
+  width: 96px;
+  height: 120px;
+}
+
+@media (min-width: 768px) {
+  .row__thumb {
+    width: 132px;
+    height: 165px;
+  }
+}
+
+/* ============================================================
+   Links, buttons — bronze is permission
+   ============================================================ */
+
+.lnk {
+  color: var(--color-bronze-10);
+  position: relative;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 24px; /* WCAG 2.2 AA 2.5.8 */
+}
+
+.lnk::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms var(--ease-arrival);
+}
+
+.lnk:hover::after {
+  transform: scaleX(1);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 28px;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* Solid fills use bronze-10: ivory on bronze-9 measures 3.93:1, under the
+     4.5:1 the 12px mono label needs. */
+  border: 1px solid var(--color-bronze-10);
+  background: var(--color-bronze-10);
+  color: var(--color-ivory-1);
+  transition:
+    background-color 280ms var(--ease-utility),
+    border-color 280ms var(--ease-utility),
+    color 280ms var(--ease-utility);
+}
+
+.btn:hover {
+  background: var(--color-bronze-11);
+  border-color: var(--color-bronze-11);
+}
+
+.btn:disabled {
+  background: var(--color-line-2);
+  border-color: var(--color-line-2);
+  color: var(--color-ivory-1);
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-bronze-10);
+  border-color: var(--color-bronze-8);
+}
+
+.btn--ghost:hover {
+  color: var(--color-ivory-1);
+  border-color: var(--color-bronze-10);
+  background: var(--color-bronze-10);
+}
+
+.btn--slab {
+  background: transparent;
+  color: var(--color-ivory-1);
+  border-color: var(--color-ivory-1);
+}
+
+.btn--slab:hover {
+  background: var(--color-bronze-10);
+  border-color: var(--color-bronze-10);
+  color: var(--color-ivory-1);
+}
+
+/* The site's single sienna: the commission submit, on hover. */
+.btn--send:hover:not(:disabled) {
+  background: var(--color-sienna);
+  border-color: var(--color-sienna);
+}
+
+.tbtn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  min-height: 48px;
+  padding-inline: 12px;
+  color: var(--color-ink-11);
+  position: relative;
+}
+
+.tbtn[aria-pressed="true"] {
+  color: var(--color-bronze-10);
+}
+
+.tbtn[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  height: 1px;
+  background: var(--color-bronze-9);
+}
+
+/* ============================================================
+   Slab — the authored inversion, not a theme
+   ============================================================ */
+
+.slab {
+  background: var(--color-slab);
+  color: var(--color-ivory-1);
+  position: relative;
+  overflow: clip;
+}
+
+.slab .t-lede,
+.slab .t-mono {
+  color: oklch(84% 0.014 75);
+}
+
+.slab__plate {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+}
+
+.slab__plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   Hero — "the plate settles"
+   ============================================================ */
+
+.hero {
+  position: relative;
+}
+
+.hero__stage {
+  position: relative;
+  height: 88svh;
+  min-height: 560px;
+  overflow: clip;
+}
+
+/* The plate runs under the transparent nav, so the hero starts at the page top. */
+html[data-scrub="on"] .hero {
+  height: 240vh;
+  margin-top: -72px;
+}
+
+html[data-scrub="on"] .hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  transform: translateY(calc(var(--release) * -6vh));
+}
+
+/* The section after the hero slides over the releasing stage. */
+.after-hero {
+  position: relative;
+  z-index: 2;
+  background: var(--color-ivory-1);
+}
+
+html[data-scrub="on"] .after-hero {
+  margin-top: -8vh;
+}
+
+/* Lenis: keep the document height honest and let it own scrolling. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.hero__frame {
+  --f-scale: 1.613;
+  --f-shift: 0%;
+  --sc: calc(1 + (1 - var(--m)) * (var(--f-scale) - 1));
+  --tx: calc((1 - var(--m)) * var(--f-shift));
+  position: absolute;
+  left: 6%;
+  top: 20%;
+  width: 88%;
+  height: 62%;
+  overflow: clip;
+  background: var(--color-ivory-3);
+  transform: translateX(var(--tx)) scale(var(--sc));
+  will-change: transform;
+}
+
+@media (min-width: 1024px) {
+  .hero__frame {
+    --f-scale: 1.7241;
+    --f-shift: -29.3%;
+    left: 38%;
+    top: 11%;
+    width: 58%;
+    height: 78%;
+  }
+}
+
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(calc(1 + (1 - var(--m)) * 0.06));
+  will-change: transform;
+}
+
+/* Legibility scrim. Full strength while the ivory headline and the transparent
+   nav sit over the plate; drops to a light grade once the copy hands off. */
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(1 - var(--swap) * 0.72);
+  /* Sized so ivory nav text clears 4.5:1 and the ivory headline clears 3:1
+     even against a blown-white plate. Worst case, not average case. */
+  background: linear-gradient(
+    180deg,
+    oklch(15% 0.008 75 / 0.68) 0%,
+    oklch(15% 0.008 75 / 0.58) 30%,
+    oklch(15% 0.008 75 / 0.56) 70%,
+    oklch(15% 0.008 75 / 0.64) 100%
+  );
+}
+
+/* The mount rule stamps in at the settle beat. */
+.hero__mount {
+  position: absolute;
+  left: 6%;
+  width: 88%;
+  top: calc(20% + 62% + 8px);
+  height: 1px;
+  background: var(--color-ink-12);
+  opacity: var(--settle);
+}
+
+@media (min-width: 1024px) {
+  .hero__mount {
+    left: 38%;
+    width: 58%;
+    top: calc(11% + 78% + 8px);
+  }
+}
+
+.hero__copy {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  padding-inline: var(--gutter);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .hero__copy {
+    width: 38%;
+    padding-left: clamp(24px, 4vw, 64px);
+    padding-right: 24px;
+  }
+}
+
+.hero__copy a,
+.hero__copy button {
+  pointer-events: auto;
+}
+
+.hero__h1--ink {
+  opacity: var(--swap);
+}
+
+/* The ivory copy sits over the plate and hands off to the ink copy. */
+.hero__h1--ivory {
+  position: absolute;
+  inset-inline: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-ivory-1);
+  opacity: calc(1 - var(--swap));
+  pointer-events: none;
+  z-index: 3;
+}
+
+@media (min-width: 1024px) {
+  .hero__h1--ivory {
+    inset-inline: 42% 8%;
+  }
+}
+
+/* Under 1024px there is no pin: the hero stacks as ordinary flow, so the
+   claim, the lede and both actions are in the first viewport at 390. */
+@media (max-width: 1023px) {
+  .hero__stage {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Copy leads, so the claim and both actions are above the fold at 390. */
+  .hero__copy {
+    order: 1;
+  }
+  .hero__frame {
+    order: 2;
+  }
+  .hero__mount {
+    order: 3;
+  }
+  .hero__cap {
+    order: 4;
+  }
+
+  .hero__copy,
+  .hero__frame,
+  .hero__mount,
+  .hero__cap {
+    position: static;
+  }
+
+  .hero__copy {
+    inset: auto;
+    display: block;
+  }
+
+  .hero__frame {
+    width: auto;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    margin: 40px var(--gutter) 0;
+    transform: none;
+  }
+
+  .hero__img,
+  .hero__eyebrow,
+  .hero__lede,
+  .hero__cta {
+    transform: none;
+  }
+
+  .hero__mount {
+    width: auto;
+    margin: 8px var(--gutter) 0;
+  }
+
+  .hero__cap {
+    margin: 24px var(--gutter) 0;
+  }
+
+  .hero__h1--ivory,
+  .hero__rule {
+    display: none;
+  }
+}
+
+.hero__eyebrow {
+  opacity: var(--rule);
+  transform: translateY(calc((1 - var(--rule)) * 8px));
+}
+
+.hero__lede,
+.hero__cta {
+  opacity: var(--copy);
+  transform: translateY(calc((1 - var(--copy)) * 24px))
+    scale(calc(0.97 + var(--copy) * 0.03));
+}
+
+.hero__cap {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 24px;
+  opacity: var(--cap);
+  letter-spacing: calc(0.14em + (1 - var(--cap)) * 0.16em);
+  z-index: 3;
+}
+
+html[data-hero="active"] .hero__cap {
+  color: var(--color-ivory-1);
+}
+
+.hero__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--color-line);
+  transform: scaleX(var(--rule));
+  transform-origin: left;
+}
+
+/* Line-wrapped headline rise, on load. Completes inside 700ms. */
+/* The line mask. At line-height .98 the descenders of g, p and y fall below the
+   line box, so the clip box is grown and pulled back by a matching negative
+   margin — the glyphs get room without the vertical rhythm moving. */
+.line {
+  display: block;
+  overflow: clip;
+  padding-block: 0.14em 0.24em;
+  margin-block: -0.14em -0.24em;
+}
+
+.line > span {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .line > span {
+    animation: line-rise 620ms var(--ease-arrival) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+}
+
+/* Starts below the grown clip box, not the old one, or the incoming line peeks
+   into the descender padding before it moves. */
+@keyframes line-rise {
+  from {
+    transform: translateY(145%);
+  }
+}
+
+/* ============================================================
+   Reveal — fails open. opacity:1 is the default state.
+   ============================================================ */
+
+.reveal {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry calc(6% + var(--i, 0) * 3%) cover
+        calc(26% + var(--i, 0) * 3%);
+    }
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plate-set {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .plate-set {
+    grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  }
+}
+
+/* ============================================================
+   Sticky service index
+   ============================================================ */
+
+.sindex {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+}
+
+@media (min-width: 1024px) {
+  .sindex {
+    grid-template-columns: 1fr 1.4fr;
+    align-items: start;
+  }
+  .sindex__rail {
+    position: sticky;
+    top: 96px;
+  }
+}
+
+.sindex__item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0 10px 14px;
+  border-left: 2px solid transparent;
+  color: var(--color-ink-11);
+  transition:
+    color 280ms var(--ease-utility),
+    border-color 280ms var(--ease-utility);
+  min-height: 48px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+}
+
+.sindex__item[data-active="true"] {
+  color: var(--color-bronze-10);
+  border-left-color: var(--color-bronze-9);
+}
+
+/* ============================================================
+   Forms
+   ============================================================ */
+
+.field {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.field__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-11);
+  margin-bottom: 8px;
+}
+
+.field__hint {
+  font-size: 0.9375rem;
+  color: var(--color-ink-11);
+  margin-bottom: 8px;
+}
+
+.field__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-line-2);
+  border-radius: 2px;
+  background: var(--color-ivory-1);
+  color: var(--color-ink-12);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+textarea.field__input {
+  min-height: 132px;
+  resize: vertical;
+}
+
+.field__err {
+  margin-top: 8px;
+  font-size: 0.9375rem;
+  color: var(--color-sienna);
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding-right: 16px;
+  font-size: 0.9375rem;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-bronze-9);
+}
+
+.notice--err {
+  border: 1px solid var(--color-sienna);
+  background: oklch(45% 0.12 45 / 0.08);
+  padding: 16px;
+  color: var(--color-ink-12);
+}
+
+/* Skeleton — the only loop on the site. */
+.skel {
+  background: var(--color-ivory-3);
+  animation: skel 1000ms var(--ease-utility) infinite alternate;
+}
+
+@keyframes skel {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel {
+    animation: none;
+    opacity: 0.8;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 100;
+  background: var(--color-ivory-1);
+  border: 1px solid var(--color-ink-12);
+  padding: 12px 16px;
+}

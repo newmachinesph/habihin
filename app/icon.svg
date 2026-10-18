@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Habihan">
+  <rect width="64" height="64" fill="#F7F2E9"/>
+  <!-- Warp and weft crossing into a woven square: habihan is the loom. -->
+  <g stroke="#29241D" stroke-width="2.6" shape-rendering="crispEdges">
+    <path d="M24 12v40M28 12v40M32 12v40M36 12v40M40 12v40"/>
+    <path d="M12 24h40M12 28h40M12 32h40M12 36h40M12 40h40"/>
+  </g>
+</svg>
